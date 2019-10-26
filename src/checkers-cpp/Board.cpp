@@ -311,6 +311,10 @@ void Board::makeMove(const Move& move, int player)
                 capture_positions.push_back(capture_position);
 
                 this->board[capture_position[0]][capture_position[1]] = Checker(".", capture_position[0], capture_position[1]);
+                if(turn == "B")
+                    this->whiteCount--;
+                else
+                    this->blackCount--;
             }
             if (turn == "B"  && target[0] == this->row - 1)
                 this->board[target[0]][target[1]].becomeKing();
@@ -325,16 +329,18 @@ void Board::makeMove(const Move& move, int player)
 
 }
 
-int Board::isWin() {
+int Board::isWin(int turn) {
     if (this->tieCount >= this->tieMax){
         return -1;
     }
     bool W = true;
     bool B = true;
     if (getAllPossibleMoves(1).size() == 0) {
-        B = false;
+        if (turn != 1)
+            B = false;
     } else if (getAllPossibleMoves(2).size() == 0) {
-        W = false;
+        if (turn != 2)
+            W = false;
     } else {
         for (int row = 0; row < this->row; row++) {
             for (int col = 0; col < this->col; col++) {
@@ -354,5 +360,93 @@ int Board::isWin() {
         return 1;
     else
         return 0;
+}
+
+int Board::isWin(string turn_s) {
+    if (this->tieCount >= this->tieMax){
+        return -1;
+    }
+    bool W = true;
+    bool B = true;
+    bool WHasMove = true;
+    bool BHasMove = true;
+    int turn = 0;
+    if (turn_s == "W")
+        turn = 2;
+    else if (turn_s == "B")
+        turn = 1;
+    if (getAllPossibleMoves(1).size() == 0) {
+        if (turn != 1)
+            BHasMove = false;
+    } else if (getAllPossibleMoves(2).size() == 0) {
+        if (turn != 2)
+            WHasMove = false;
+    }
+    if (WHasMove && !BHasMove)
+    {
+        return 2;
+    }
+    else if  (!WHasMove && BHasMove)
+    {
+        return 1;
+    }
+    for (int row = 0; row < this->row; row++) {
+        for (int col = 0; col < this->col; col++) {
+            Checker checker = this->board[row][col];
+            if (checker.color == "W")
+                W = false;
+            else if (checker.color == "B")
+                B = false;
+            if (!W && !B)
+                return 0;
+        }
+    }
+
+    if (W)
+        return 2;
+    else if (B)
+        return 1;
+    else
+        return 0;
+}
+
+void Board:: Undo(){
+    if(!saved_move_list.empty()){
+        Saved_Move temp_saved_move = saved_move_list.back();
+        Position original_point = temp_saved_move.maked_move.seq[0];
+        Position target_point = temp_saved_move.maked_move.seq[-1];
+
+        this->board[original_point[0]][original_point[1]].color = this->board[target_point[0]][target_point[1]].color;
+        if(temp_saved_move.become_king){
+            this->board[original_point[0]][original_point[1]].isKing = false;
+        }
+        else{
+            this->board[original_point[0]][original_point[1]].isKing = this->board[target_point[0]][target_point[1]].isKing;
+        }
+
+        if(!(target_point == original_point)){
+            this->board[target_point[0]][target_point[1]].color = ".";
+            this->board[target_point[0]][target_point[1]].isKing = false;
+        }
+        for(int i = 0; i < temp_saved_move.saved_enemy_list.size(); i++){
+            int x = temp_saved_move.saved_enemy_list[i][0];
+            int y = temp_saved_move.saved_enemy_list[i][1];
+            int c = temp_saved_move.saved_enemy_list[i][2];
+            int k = temp_saved_move.saved_enemy_list[i][3];
+
+            this->board[x][y].color = (c==1?"B":"W");
+            this->board[x][y].isKing = (k==0?false:true);
+            if (c==1){
+                this->blackCount += 1;
+            }
+            else{
+                this->whiteCount += 1;
+            }
+
+        }
+        saved_move_list.pop_back();
+
+
+    }
 }
 
