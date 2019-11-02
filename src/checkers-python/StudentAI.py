@@ -14,14 +14,16 @@ class StudentAI():
         self.color = ''
         self.opponent = {1:2,2:1}
         self.color = 2
+        self.f = open("debug.txt", "w")
     def get_move(self,move):
         if len(move) != 0:
             self.board.make_move(move,self.opponent[self.color])
         else:
             self.color = 1
         moves = self.board.get_all_possible_moves(self.color)
-        print("Curr Moves: ", moves)
+        self.f.write("Curr Moves: " + str(moves) + '\n')
         move = self.minimax(moves)
+        self.f.write("Chosen Move: " + str(move) + '\n')
         # index = randint(0,len(moves)-1)
         # inner_index =  randint(0,len(moves[index])-1)
         # move = moves[index][inner_index]
@@ -74,7 +76,7 @@ class StudentAI():
 
     	inverse = [(value, key) for key, value in dic_l1.items()]
     	l0_value = max(inverse)[1]
-    	print(dic_l1)
-    	print(l0_value)
+    	# print(dic_l1)
+    	# print(l0_value)
     	x,y = l0_value.split(' ')
     	return moves[int(x)][int(y)]
