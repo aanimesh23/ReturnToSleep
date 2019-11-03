@@ -40,6 +40,13 @@ class StudentAI():
     		for i in range(len(moves[peice])):
     			move = moves[peice][i]
     			self.board.make_move(move,self.color)
+    			
+
+    			if self.board.is_win(self.color) == self.color:
+    				self.board.undo()
+    				return moves[peice][i]
+
+
     			l2_moves = self.board.get_all_possible_moves(self.opponent[self.color])
     			# print("Opponent Moves: \n peice: ",peice, "\n dir: ",i, "\nMoves\n", l2_moves)
     			dic_l2 = dict()
@@ -47,11 +54,11 @@ class StudentAI():
     				for j in range(len(l2_moves[opp_peice])):
     					move = l2_moves[opp_peice][j]
     					self.board.make_move(move,self.opponent[self.color])
-    					
     					l3_moves = self.board.get_all_possible_moves(self.color)
     					dic_l3 = dict()
     					# print("L3 ",l3_moves)
     					for my_peice in range(len(l3_moves)):
+    						flag = 0
     						for k in range(len(l3_moves[my_peice])):
     							move = l3_moves[my_peice][k]
     							self.board.make_move(move,self.color)
@@ -65,18 +72,27 @@ class StudentAI():
 		    					# print(key, ' ', value)
 		    					dic_l3[key] = value
 		    					self.board.undo()
+		    					if self.board.is_win(self.color) == self.color:
+    								flag = 1
+    								break
+    						if flag == 1:
+    							break
 
 		    			inverse = [(value, key) for key, value in dic_l3.items()]
 		    			l2_value = max(inverse)[0]
 		    			key = str(opp_peice) + ' ' + str(j)
 		    			dic_l2[key] = l2_value
     					self.board.undo()
-
-    			inverse = [(value, key) for key, value in dic_l2.items()]
-		    	l1_value = min(inverse)[0]
-    			key = str(peice) + ' ' + str(i)
-    			dic_l1[key] = l1_value
-    			self.board.undo()
+    			if len(dic_l2) == 0:
+    				key = str(peice) + ' ' + str(i)
+	    			dic_l1[key] = 0
+	    			self.board.undo()
+	    		else:
+	    			inverse = [(value, key) for key, value in dic_l2.items()]
+	    			l1_value = min(inverse)[0]
+	    			key = str(peice) + ' ' + str(i)
+	    			dic_l1[key] = l1_value
+	    			self.board.undo()
 
     	inverse = [(value, key) for key, value in dic_l1.items()]
     	l0_value = max(inverse)[1]
