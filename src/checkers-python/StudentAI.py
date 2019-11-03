@@ -22,6 +22,10 @@ class StudentAI():
             self.color = 1
         moves = self.board.get_all_possible_moves(self.color)
         self.f.write("Curr Moves: " + str(moves) + '\n')
+        if len(moves) == 1 and len(moves[0]) == 1:
+        	move = moves[0][0]
+        	self.board.make_move(move,self.color)
+        	return move
         move = self.minimax(moves)
         self.f.write("Chosen Move: " + str(move) + '\n')
         # index = randint(0,len(moves)-1)
@@ -70,7 +74,7 @@ class StudentAI():
 
     			inverse = [(value, key) for key, value in dic_l2.items()]
 		    	l1_value = min(inverse)[0]
-    			key = str(peice) + ' ' + str(k)
+    			key = str(peice) + ' ' + str(i)
     			dic_l1[key] = l1_value
     			self.board.undo()
 
