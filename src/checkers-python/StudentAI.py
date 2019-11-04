@@ -78,14 +78,19 @@ class StudentAI():
     						if flag == 1:
     							break
 
-		    			inverse = [(value, key) for key, value in dic_l3.items()]
-		    			l2_value = max(inverse)[0]
-		    			key = str(opp_peice) + ' ' + str(j)
-		    			dic_l2[key] = l2_value
-    					self.board.undo()
+    					if len(dic_l3) == 0:
+    						key = str(opp_peice) + ' ' + str(j)
+			    			dic_l2[key] = int(0x40000)
+	    					self.board.undo()
+	    				else:
+			    			inverse = [(value, key) for key, value in dic_l3.items()]
+			    			l2_value = max(inverse)[0]
+			    			key = str(opp_peice) + ' ' + str(j)
+			    			dic_l2[key] = l2_value
+	    					self.board.undo()
     			if len(dic_l2) == 0:
     				key = str(peice) + ' ' + str(i)
-	    			dic_l1[key] = 0
+	    			dic_l1[key] = int(-0x40000)
 	    			self.board.undo()
 	    		else:
 	    			inverse = [(value, key) for key, value in dic_l2.items()]
