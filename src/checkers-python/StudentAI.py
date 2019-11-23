@@ -108,9 +108,9 @@ class StudentAI():
     							self.board.make_move(move,self.color)
 		    					value = -1
 		    					if self.color == 1:
-		    						value = self.heuristic_black()
+		    						value = (self.board.black_count / (self.board.black_count + self.board.white_count)) * 100
 		    					else:
-		    						value = self.heuristic_black() * -1
+		    						value = (self.board.white_count / (self.board.black_count + self.board.white_count)) * 100
 
 		    					key = str(my_peice) + ' ' + str(k)
 		    					# print(key, ' ', value)
