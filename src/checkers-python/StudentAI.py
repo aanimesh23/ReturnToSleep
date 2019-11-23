@@ -15,6 +15,50 @@ class StudentAI():
         self.opponent = {1:2,2:1}
         self.color = 2
         self.f = open("debug.txt", "w")
+
+    def heuristic_black(self):
+        count_b = 0
+        count_w = 0
+        for i in range(int(len(self.board.board) / 2)):
+            for j in range(len(self.board.board[i])):
+                if self.board.board[i][j].color == 1:
+                    if self.board.board[i][j].is_king == True:
+                        count_b += 10
+                    else:
+                        count_b += 5
+                else:
+                    if self.board.board[i][j].is_king == True:
+                        count_w += 10
+                    else:
+                        count_w += 7
+        for i in range(int(len(self.board.board) / 2), len(self.board.board)):
+            for j in range(len(self.board.board[i])):
+                if self.board.board[i][j].color == 1:
+                    if self.board.board[i][j].is_king == True:
+                        count_b += 10
+                    else:
+                        count_b += 7
+                else:
+                    if self.board.board[i][j].is_king == True:
+                        count_w += 10
+                    else:
+                        count_w += 5
+
+        # for i in self.board.board:
+        #     for j in i:
+        #
+        #         if j.color == 1:
+        #             if j.is_king == True:
+        #                 count_b += 7 + self.row
+        #             else:
+        #                 count_b += 5 + (self.row - j.row)
+        #         elif j.color == 2:
+        #             if j.is_king == True:
+        #                 count_w += 7 + self.row
+        #             else:
+        #                 count_w += 5 + j.row
+        return count_b - count_w
+
     def get_move(self,move):
         if len(move) != 0:
             self.board.make_move(move,self.opponent[self.color])
@@ -40,7 +84,7 @@ class StudentAI():
     		for i in range(len(moves[peice])):
     			move = moves[peice][i]
     			self.board.make_move(move,self.color)
-    			
+
 
     			if self.board.is_win(self.color) == self.color:
     				self.board.undo()
@@ -64,9 +108,9 @@ class StudentAI():
     							self.board.make_move(move,self.color)
 		    					value = -1
 		    					if self.color == 1:
-		    						value = self.board.black_count - self.board.white_count
+		    						value = self.heuristic_black()
 		    					else:
-		    						value = self.board.white_count - self.board.black_count
+		    						value = self.heuristic_black() * -1
 
 		    					key = str(my_peice) + ' ' + str(k)
 		    					# print(key, ' ', value)
