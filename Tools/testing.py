@@ -5,7 +5,7 @@ lost = 0
 tie = 0
 for i in range(10):
 	print("Game Number: ", i+1)
-	X = os.popen("python3 AI_Runner.py 7 7 2 l Sample_AIs/Poor_AI_368/main.py  ../src/checkers-python/main.py").read()
+	X = os.popen("python3 AI_Runner.py 7 7 2 l Sample_AIs/Average_AI_368/main.py  ../src/checkers-python/main.py").read()
 	X = X.split('\n')
 	#print(X)
 	game_res = X[-2].strip()
